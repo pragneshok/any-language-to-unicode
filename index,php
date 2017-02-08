@@ -1,0 +1,54 @@
+<?php
+
+if (!empty($_POST)) {
+    echo "<prE>";
+    foreach($_POST as $key=>$value){
+        $_POST[$key] = convertToEntities($value);
+    }
+    print_r($_POST);
+}
+
+function convertToEntities($tstr) {
+    $bstr = '';
+    for ($i = 0; $i < strlen($tstr); $i++) {
+        if (charCodeAt($tstr, $i) > 127) {
+            $bstr .= '&#' . charCodeAt($tstr, $i) . ';';
+        } else {
+            $bstr .= substr($tstr, $i,1);
+        }
+    }
+    return $bstr;
+}
+
+function charCodeAt($str, $num) {
+    return utf8_ord(utf8_charAt($str, $num));
+}
+
+function utf8_ord($ch) {
+    $len = strlen($ch);
+    if ($len <= 0)
+        return false;
+    $h = ord($ch{0});
+    if ($h <= 0x7F)
+        return $h;
+    if ($h < 0xC2)
+        return false;
+    if ($h <= 0xDF && $len > 1)
+        return ($h & 0x1F) << 6 | (ord($ch{1}) & 0x3F);
+    if ($h <= 0xEF && $len > 2)
+        return ($h & 0x0F) << 12 | (ord($ch{1}) & 0x3F) << 6 | (ord($ch{2}) & 0x3F);
+    if ($h <= 0xF4 && $len > 3)
+        return ($h & 0x0F) << 18 | (ord($ch{1}) & 0x3F) << 12 | (ord($ch{2}) & 0x3F) << 6 | (ord($ch{3}) & 0x3F);
+    return false;
+}
+
+function utf8_charAt($str, $num) {
+    return mb_substr($str, $num, 1, 'UTF-8');
+}
+
+?>
+
+<form action="" method="POST">
+    <input type="text" name="abc">
+    <input type="submit">
+</form>
