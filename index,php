@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set("display_errors", "-1");
+        
 if (!empty($_POST)) {
     echo "<prE>";
     foreach($_POST as $key=>$value){
@@ -10,11 +13,11 @@ if (!empty($_POST)) {
 
 function convertToEntities($tstr) {
     $bstr = '';
-    for ($i = 0; $i < strlen($tstr); $i++) {
+    for ($i = 0; $i < mb_strlen($tstr); $i++) {
         if (charCodeAt($tstr, $i) > 127) {
             $bstr .= '&#' . charCodeAt($tstr, $i) . ';';
         } else {
-            $bstr .= substr($tstr, $i,1);
+            $bstr .= mb_substr($tstr, $i,1, 'utf-8');
         }
     }
     return $bstr;
@@ -25,7 +28,7 @@ function charCodeAt($str, $num) {
 }
 
 function utf8_ord($ch) {
-    $len = strlen($ch);
+    $len = mb_strlen($ch);
     if ($len <= 0)
         return false;
     $h = ord($ch{0});
@@ -43,11 +46,10 @@ function utf8_ord($ch) {
 }
 
 function utf8_charAt($str, $num) {
-    return mb_substr($str, $num, 1, 'UTF-8');
+    //mb_internal_encoding("utf-8");
+    return mb_substr($str, $num, 1, 'utf-8');
 }
-
 ?>
-
 <form action="" method="POST">
     <input type="text" name="abc">
     <input type="submit">
